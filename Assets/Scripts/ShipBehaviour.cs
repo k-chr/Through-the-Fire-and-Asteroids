@@ -111,5 +111,6 @@ public class ShipBehaviour : MonoBehaviour {
 				stats._shipStats.shotSpeed
 			);
 		}
+		shotTimer = stats._shipStats.fireRate;
 	}
 }

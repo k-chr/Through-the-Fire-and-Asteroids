@@ -69,6 +69,7 @@
      <Compile Include="Assets\CubeShipsFree\Scripts\WeaponController.cs" />
      <Compile Include="Assets\CubeShipsFree\Scripts\ZigZagManouver.cs" />
      <Compile Include="Assets\Scripts\Bullet.cs" />
+     <Compile Include="Assets\Scripts\EnemyAI.cs" />
      <Compile Include="Assets\Scripts\ShipBehaviour.cs" />
      <Compile Include="Assets\Scripts\ShipStats.cs" />
      <Compile Include="Assets\Scripts\Utilities\FileDump.cs" />
