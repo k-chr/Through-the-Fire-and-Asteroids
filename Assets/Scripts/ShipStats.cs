@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿#define DEBUG
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
@@ -59,6 +60,7 @@ public struct UpgradeData {
 	public uint[] upgradeExpValues;
 	public uint upgradePoints;
 	public uint baseExp;
+	public int index;
 
 	public UpgradeData(object obj) {
 		upgradeExpValues = new uint[20];
@@ -69,6 +71,40 @@ public struct UpgradeData {
 		}
 		upgradePoints = currentExperience = 0;
 		targetExperience = baseExp;
+		index = 0;
+	}
+
+	public UpgradeData(UpgradeData other) {
+		this.baseExp = other.baseExp;
+		this.upgradePoints = other.upgradePoints;
+		this.currentExperience = other.currentExperience;
+		this.targetExperience = other.targetExperience;
+		this.index = other.index;
+		this.upgradeExpValues = new uint[other.upgradeExpValues.Length];
+		System.Array.Copy(other.upgradeExpValues, 0, this.upgradeExpValues, 0, other.upgradeExpValues.Length);
+	}
+
+	public static UpgradeData operator++(UpgradeData x) {
+		if (x.index == x.upgradeExpValues.Length) return x;
+		UpgradeData _x = new UpgradeData(x);
+		++_x.upgradePoints;
+		try {
+			_x.targetExperience = _x.upgradeExpValues[++_x.index];	
+		} catch (System.IndexOutOfRangeException) {
+			Debug.Log("MAX LEVEL!");
+		}
+		_x.currentExperience = 0;
+		return _x;
+	}
+
+	public static UpgradeData operator--(UpgradeData x) {
+		UpgradeData _x = new UpgradeData(x);
+		if (_x.upgradePoints > 0) --_x.upgradePoints;
+		return _x;
+	}
+
+	public override string ToString() {
+		return upgradePoints.ToString();
 	}
 }
 
@@ -82,19 +118,25 @@ public struct MatchStatistics {
 	}
 }
 
+//**********************STATYSTYKI***********************
+
 public class ShipStats : MonoBehaviour {
 
 	public static Dictionary<ShipType, Stats> statsInitializer = new Dictionary<ShipType, Stats>();
 	public Dictionary<string, Upgrade> playerUpgrades = new Dictionary<string, Upgrade>();
 	public Dictionary<string, float> upgradeValues = new Dictionary<string, float>();
 	public Stats _shipStats = new Stats();
-
-	public string[] upgradeNames = new string[] {"damage", "speed", "damageReduction", "health"};
-
+	public UpgradeData upgradeInfo = new UpgradeData(null);
+	public MatchStatistics playerStatistics = new MatchStatistics();
+	public static string[] upgradeNames = new string[] {"damage", "speed", "damageReduction", "health"};
 	public ShipType type;
 	
-	void Start () {
-		//StatsInit(this.type);
+	void Awake () {
+		UpgradeValuesInit();
+		UpgradesInit();
+		ShipDataDump();
+		StatsDump();
+		StatsInit(this.type);
 	}
 
 	void StatsInit(ShipType pChoice) {
@@ -134,19 +176,47 @@ public class ShipStats : MonoBehaviour {
 		structs[1].possibleUpgradeLevels = 6;
 		structs[2].possibleUpgradeLevels = 3;
 		structs[3].possibleUpgradeLevels = 3;
+		Dictionary<string, Upgrade> temp = new Dictionary<string, Upgrade>();
+		for (int i = 0; i < upgradeNames.Length; ++i) {
+			temp.Add(upgradeNames[i], structs[i]);
+		}
 		FileDump.SerializeToFile(
-			JsonConvert.SerializeObject(structs, Formatting.Indented),
+			JsonConvert.SerializeObject(temp, Formatting.Indented),
 			@"JsonFiles/upgrades.json"
 		);
 	}
 
+	void UpgradesInit() {
+		FileStream fs = FileDump.CreateFile(@"JsonFiles/upgrades.json");
+		using (StreamReader reader = new StreamReader(fs)) {
+			playerUpgrades = JsonConvert.DeserializeObject<Dictionary<string, Upgrade>>(reader.ReadToEnd());
+		}
+		fs.Close();
+	}
+
 	public void UpgradeShip(string upgradeName, string fieldName) {
+		#if (DEBUG)
+		Debug.Log("DEBUGGING REFLECTION");
+		foreach (var f in _shipStats.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance)) {
+			Debug.Log(f.GetValue(_shipStats).ToString());
+		}
+		#endif
+		/* actual function's body */
 		try {
 			++playerUpgrades[upgradeName];
+			--upgradeInfo;
 			CalculateNewStats(upgradeName, fieldName);
+			
 		} catch (System.InvalidOperationException) {
 			Debug.Log("Maximum upgrade level already");
 		}
+		/* end of body */
+		#if (DEBUG)
+		Debug.Log("DEBUGGING IF IT WAS SUCCESSFUL");
+		foreach (var f in _shipStats.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance)) {
+			Debug.Log(f.GetValue(_shipStats).ToString());
+		}
+		#endif		
 	}
 
 	void ShipDataDump() {
