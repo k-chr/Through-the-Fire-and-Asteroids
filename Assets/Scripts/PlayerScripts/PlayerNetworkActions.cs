@@ -53,7 +53,7 @@ public class PlayerNetworkActions : NetworkBehaviour {
 
         audioSource = GetComponent<AudioSource>();
         shipStats = gameObject.GetComponent<ShipStats>();
-        curHealth = shipStats._shipStats.health;
+        curHealth = shipStats._shipStats.maxHealth;
 
         if (!isLocalPlayer)
         {

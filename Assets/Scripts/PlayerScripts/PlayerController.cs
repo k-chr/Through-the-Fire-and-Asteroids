@@ -39,6 +39,6 @@ public class PlayerController : MonoBehaviour
         transform.position = SpawnPoints[Random.Range(0, SpawnPoints.Length)].transform.position;
         this.enabled = true;
         this.GetComponent<PlayerNetworkActions>().enabled = true;
-        this.GetComponent<PlayerNetworkActions>().curHealth = GetComponent<ShipStats>()._shipStats.health;
+        this.GetComponent<PlayerNetworkActions>().curHealth = GetComponent<ShipStats>()._shipStats.maxHealth;
     }
 }

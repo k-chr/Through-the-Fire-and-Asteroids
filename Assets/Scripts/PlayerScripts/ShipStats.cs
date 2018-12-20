@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using Newtonsoft.Json;
+using System.Reflection;
 
 public enum ShipType {
 	Heavy = 0,
@@ -18,17 +19,18 @@ public enum UpgradeType {
 }
 
 public struct Stats {
-    public float health;
     public float damage;
-	public float speed;
-	public float turboMultiplier;
-	public float damageReduction;
-	public float shotSpeed;
+    public float speed;
+    public float turboMultiplier;
+    public float damageReduction;
+    public float shotSpeed;
+    public float maxHealth;
+    public float curHealth;
     public float fireRate;
 
     public Stats(float _health, float _damage, float _speed, float _turboMultiplier, float _damageReduction, float _shotSpeed, float _fireRate)
     {
-        health = _health;
+        maxHealth = curHealth = _health;
         damage = _damage;
         speed = _speed;
         turboMultiplier = _turboMultiplier;
@@ -109,53 +111,133 @@ public struct MatchStatistics {
 
 public class ShipStats : MonoBehaviour {
 
-	public static Dictionary<ShipType, Stats> statsInitializer = new Dictionary<ShipType, Stats>();
-	public Dictionary<string, Upgrade> playerUpgrades = new Dictionary<string, Upgrade>();
-
-    [SerializeField]
-	public Stats _shipStats = new Stats(100f, 100f, 5f, 2f, 0.5f, 40f, 4f);
+    public static Dictionary<ShipType, Stats> statsInitializer = new Dictionary<ShipType, Stats>();
+    public Dictionary<string, Upgrade> playerUpgrades = new Dictionary<string, Upgrade>();
+    public Dictionary<string, float> upgradeValues = new Dictionary<string, float>();
+    public Stats _shipStats = new Stats();
     public MatchStatistics _matchStats = new MatchStatistics(0, 0, 0);
 
-	public string[] upgradeNames = new string[] {"damage", "speed", "damageReduction", "health"};
+    public string[] upgradeNames = new string[] { "damage", "speed", "damageReduction", "health" };
 
-	public ShipType type;
-	
-	void Start () {}
+    public ShipType type;
 
-	void StatsInit(ShipType pChoice) {
-		if (!System.Enum.IsDefined(typeof(ShipType), pChoice)) throw new System.InvalidOperationException();
-		using (StreamReader reader = new StreamReader("JsonFiles/shipStats.json")) {
-			statsInitializer = JsonConvert.DeserializeObject<Dictionary<ShipType, Stats>>(reader.ReadToEnd());
-		}
-		_shipStats = statsInitializer[pChoice];
-	}
+    void Start()
+    {
+        //StatsInit(this.type);
+    }
 
-	void StatsDump() {
-		FileDump.SerializeToFile(
-			JsonConvert.SerializeObject(statsInitializer, Formatting.Indented),
-			@"JsonFiles/shipStats.json"
-		);
-	}
+    void StatsInit(ShipType pChoice)
+    {
+        if (!System.Enum.IsDefined(typeof(ShipType), pChoice)) throw new System.InvalidOperationException();
+        using (StreamReader reader = new StreamReader("JsonFiles/shipStats.json"))
+        {
+            statsInitializer = JsonConvert.DeserializeObject<Dictionary<ShipType, Stats>>(reader.ReadToEnd());
+        }
+        _shipStats = statsInitializer[pChoice];
+    }
 
-	void AssignType(ShipType type) {
-		this.type = type;
-	}
+    void UpgradeValuesInit()
+    {
+        upgradeValues["damage"] = 5f;
+        upgradeValues["speed"] = 1.5f;
+        upgradeValues["damageReduction"] = 5f;
+        upgradeValues["health"] = 15f;
+    }
 
-	void UpgradesDump() {
-		Upgrade[] structs = new Upgrade[upgradeNames.Length];//0 - damage, 1 - speed, 2 - damage reduction, 3 - more health
-		structs[0].upgrType = UpgradeType.damage;
-		structs[1].upgrType = UpgradeType.speed;
-		structs[2].upgrType = UpgradeType.damageReduction;
-		structs[3].upgrType = UpgradeType.health;
-		structs[0].currentUpgradeLevel = structs[1].currentUpgradeLevel = structs[2].currentUpgradeLevel = structs[3].currentUpgradeLevel = 0;
-		structs[0].possibleUpgradeLevels = 6;
-		structs[1].possibleUpgradeLevels = 6;
-		structs[2].possibleUpgradeLevels = 3;
-		structs[3].possibleUpgradeLevels = 3;
-		FileDump.SerializeToFile(
-			JsonConvert.SerializeObject(structs, Formatting.Indented),
-			@"JsonFiles/upgrades.json"
-		);
-	}
+    void StatsDump()
+    {
+        FileDump.SerializeToFile(
+            JsonConvert.SerializeObject(statsInitializer, Formatting.Indented),
+            @"JsonFiles/shipStats.json"
+        );
+    }
 
+    void AssignType(ShipType type)
+    {
+        this.type = type;
+    }
+
+    void UpgradesDump()
+    {
+        Upgrade[] structs = new Upgrade[upgradeNames.Length];//0 - damage, 1 - speed, 2 - damage reduction, 3 - more health
+        structs[0].upgrType = UpgradeType.damage;
+        structs[1].upgrType = UpgradeType.speed;
+        structs[2].upgrType = UpgradeType.damageReduction;
+        structs[3].upgrType = UpgradeType.health;
+        structs[0].currentUpgradeLevel = structs[1].currentUpgradeLevel = structs[2].currentUpgradeLevel = structs[3].currentUpgradeLevel = 0;
+        structs[0].possibleUpgradeLevels = 6;
+        structs[1].possibleUpgradeLevels = 6;
+        structs[2].possibleUpgradeLevels = 3;
+        structs[3].possibleUpgradeLevels = 3;
+        FileDump.SerializeToFile(
+            JsonConvert.SerializeObject(structs, Formatting.Indented),
+            @"JsonFiles/upgrades.json"
+        );
+    }
+
+    public void UpgradeShip(string upgradeName, string fieldName)
+    {
+        try
+        {
+            ++playerUpgrades[upgradeName];
+            CalculateNewStats(upgradeName, fieldName);
+        }
+        catch (System.InvalidOperationException)
+        {
+            Debug.Log("Maximum upgrade level already");
+        }
+    }
+
+    void ShipDataDump()
+    {
+        ShipType[] types = System.Enum.GetValues(typeof(ShipType)) as ShipType[];
+        Stats temp = new Stats();
+        //heavy ship
+        temp.damage = 15f;
+        temp.speed = 2f;
+        temp.turboMultiplier = 1.2f;
+        temp.damageReduction = 30f;
+        temp.shotSpeed = 3f;
+        temp.curHealth = temp.maxHealth = 250f;
+        temp.fireRate = 0.5f;
+        statsInitializer[types[0]] = temp;
+        //fast ship
+        temp.damage = 20f;
+        temp.speed = 7f;
+        temp.turboMultiplier = 1.8f;
+        temp.damageReduction = 15f;
+        temp.shotSpeed = 3f;
+        temp.curHealth = temp.maxHealth = 125f;
+        temp.fireRate = 0.35f;
+        statsInitializer[types[1]] = temp;
+        //balanced ship
+        temp.damage = 12f;
+        temp.speed = 4f;
+        temp.turboMultiplier = 1.5f;
+        temp.damageReduction = 20f;
+        temp.shotSpeed = 5f;
+        temp.curHealth = temp.maxHealth = 150f;
+        temp.fireRate = 0.4f;
+        statsInitializer[types[2]] = temp;
+        StatsDump();
+    }
+
+    void CalculateNewStats(string upgradeName, string fieldName)
+    {
+        FieldInfo field = _shipStats.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.Public);
+        FieldInfo f = _shipStats.GetType().GetField("maxHealth", BindingFlags.Instance | BindingFlags.Public);
+        if (upgradeName == "health")
+        {
+            float maxHealthVal = (float)f.GetValue(_shipStats);
+            maxHealthVal += upgradeValues[upgradeName];
+            object temp1 = _shipStats;
+            f.SetValue(temp1, maxHealthVal);
+            _shipStats = (Stats)temp1;
+        }
+        object temp = _shipStats;
+        float val = (float)field.GetValue(_shipStats);
+        val += upgradeValues[upgradeName];
+        field.SetValue(temp, val);
+        _shipStats = (Stats)temp;
+    }
 }
