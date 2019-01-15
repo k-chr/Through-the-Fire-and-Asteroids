@@ -4,7 +4,7 @@
     "speed": 2.0,
     "turboMultiplier": 1.2,
     "damageReduction": 30.0,
-    "shotSpeed": 3.0,
+    "shotSpeed": 6.0,
     "maxHealth": 250.0,
     "curHealth": 250.0,
     "fireRate": 0.5
@@ -14,7 +14,7 @@
     "speed": 7.0,
     "turboMultiplier": 1.8,
     "damageReduction": 15.0,
-    "shotSpeed": 3.0,
+    "shotSpeed": 6.0,
     "maxHealth": 125.0,
     "curHealth": 125.0,
     "fireRate": 0.35
@@ -24,7 +24,7 @@
     "speed": 4.0,
     "turboMultiplier": 1.5,
     "damageReduction": 20.0,
-    "shotSpeed": 5.0,
+    "shotSpeed": 10.0,
     "maxHealth": 150.0,
     "curHealth": 150.0,
     "fireRate": 0.4

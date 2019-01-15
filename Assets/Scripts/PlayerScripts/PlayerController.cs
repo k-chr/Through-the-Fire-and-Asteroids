@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
 
     private GameObject[] SpawnPoints = null;
     public Camera playerCamera = null;
-    public Vector3 playerCameraPosition = new Vector3(0f,0f,0f);
+    public Vector3 playerCameraPosition = new Vector3(0f, 0.8f, -0.6f);
 
     private void Awake()
     {
@@ -17,13 +17,15 @@ public class PlayerController : MonoBehaviour
         speed = gameObject.GetComponent<ShipStats>()._shipStats.speed;
         SpawnPoints = GameObject.FindGameObjectsWithTag("Respawn");
         playerCamera = GetComponentInChildren<Camera>();
-        playerCamera.transform.position = gameObject.transform.position + playerCameraPosition;
-        playerCamera.transform.rotation = gameObject.transform.rotation;
+        playerCameraPosition = new Vector3(0f, 0.8f, -0.6f);
     }
 
     void FixedUpdate()
     {
         transform.position += transform.forward * Time.deltaTime * speed;
+        playerCamera.transform.localPosition = playerCameraPosition;
+        Debug.Log("playerCameralocalPosition: " + Vector3.Distance(playerCameraPosition,gameObject.transform.position).ToString());
+        
         transform.Rotate(Input.GetAxis("Vertical"), 0f, -Input.GetAxis("Horizontal"));
     }
 

@@ -84,7 +84,7 @@ public class PlayerNetworkActions : NetworkBehaviour {
         if (Input.GetButton("Fire1") && shotTimer <= 0f)
         {
             CmdShoot();
-            shotTimer = 1f / shipStats._shipStats.fireRate;
+            shotTimer = shipStats._shipStats.fireRate;
         }
 
         //respawn key
