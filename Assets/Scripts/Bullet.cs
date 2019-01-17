@@ -1,34 +1,48 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.Networking;
 
-public class Bullet : MonoBehaviour {
+public class Bullet : NetworkBehaviour {
 
 	public float damage = 0f;
 	public float speed = 0f;
 	public float decayTime = 0f;
-	public Vector3 direction = Vector3.zero;
-	
-	void Update () {
-		transform.Translate(direction * speed);
+
+    public string ownerID;
+
+    public GameObject explosion;
+    public GameObject playerExplosion;
+
+    private void Start()
+    {
+        GetComponent<Rigidbody>().velocity = transform.forward * speed;
+    }
+
+    [ServerCallback]
+	void Update ()
+    {
+        decayTime -= Time.deltaTime;
+        if (decayTime < 0f) NetworkServer.Destroy(this.gameObject);
 	}
 
-	void OnCollisionEnter(Collision other) {
-		if (other.gameObject.CompareTag("Player")) {
-			//other.gameObject.GetComponent<>
-		}
+    void OnCollisionEnter(Collision other)
+    {
+        if (!isServer) return;
+        if (other.gameObject.CompareTag("GameController"))
+        {
+            if (other.gameObject.GetComponent<NetworkIdentity>().netId.ToString() == ownerID) return;
+            other.gameObject.GetComponent<PlayerNetworkActions>().TakeDamage(damage, "Player_" + ownerID);
+            //explosion = Instantiate(playerExplosion);
+            //NetworkServer.Spawn(explosion);
+        }
 
-		if (other.gameObject.CompareTag("Enemy")) {
+        NetworkServer.Destroy(this.gameObject);
+    }
 
-		}
-		Destroy(this.gameObject);
-	}
-
-	public void InitBullet(Vector3 flightDirection, float bulletDamage, float bulletSpeed) {
-		Destroy(this.gameObject, decayTime);
-		direction = flightDirection;
+	public void InitBullet(float bulletDamage, float bulletSpeed, string _ownerID)
+    {
+        ownerID = _ownerID;
 		this.damage = bulletDamage;
 		this.speed = bulletSpeed;
-		this.decayTime = 4f;
+		this.decayTime = 2f;
 	}
 }
