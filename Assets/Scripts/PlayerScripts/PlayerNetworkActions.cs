@@ -27,6 +27,8 @@ public class PlayerNetworkActions : NetworkBehaviour {
 
     ParticleSystem starsParticle;
 
+    Transform marker = null;
+
     [SerializeField]
     List<Behaviour> components = new List<Behaviour>();
 
@@ -64,6 +66,14 @@ public class PlayerNetworkActions : NetworkBehaviour {
             Destroy(GetComponent<PlayerController>());
             DisableComponents();
             starsParticle = GetComponentInChildren<ParticleSystem>();
+            foreach (Transform child in transform)
+            {
+                if (child.CompareTag("Marker"))
+                {
+                    marker = child;
+                    marker.GetComponent<Renderer>().material.color = Color.green;
+                }
+            }
             starsParticle.Stop();
             starsParticle.Clear();
             return;

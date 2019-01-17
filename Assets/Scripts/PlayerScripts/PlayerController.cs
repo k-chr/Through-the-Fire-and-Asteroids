@@ -24,7 +24,6 @@ public class PlayerController : MonoBehaviour
     {
         transform.position += transform.forward * Time.deltaTime * speed;
         playerCamera.transform.localPosition = playerCameraPosition;
-        Debug.Log("playerCameralocalPosition: " + Vector3.Distance(playerCameraPosition,gameObject.transform.position).ToString());
         
         transform.Rotate(Input.GetAxis("Vertical"), 0f, -Input.GetAxis("Horizontal"));
     }
