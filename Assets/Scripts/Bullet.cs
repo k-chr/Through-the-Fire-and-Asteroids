@@ -8,19 +8,20 @@ public class Bullet : NetworkBehaviour {
 	public float decayTime = 0f;
 
     public string ownerID;
-
+        
     public GameObject explosion;
     public GameObject playerExplosion;
 
     private void Start()
     {
-        GetComponent<Rigidbody>().velocity = transform.forward * speed;
+        GetComponent<Rigidbody>().velocity = transform.forward * speed/8;
     }
 
     [ServerCallback]
 	void Update ()
     {
         decayTime -= Time.deltaTime;
+        transform.position = transform.position + transform.forward * speed/8;
         if (decayTime < 0f) NetworkServer.Destroy(this.gameObject);
 	}
 
@@ -31,11 +32,13 @@ public class Bullet : NetworkBehaviour {
         {
             if (other.gameObject.GetComponent<NetworkIdentity>().netId.ToString() == ownerID) return;
             other.gameObject.GetComponent<PlayerNetworkActions>().TakeDamage(damage, "Player_" + ownerID);
-            //explosion = Instantiate(playerExplosion);
-            //NetworkServer.Spawn(explosion);
+            
+            explosion = Instantiate(playerExplosion);
+            NetworkServer.Spawn(explosion);
+            Debug.Log("Bullet with owner:" + ownerID + ", hit object:" + other.gameObject.name);
+            Debug.Log("damage dealt: " + damage.ToString());
+            NetworkServer.Destroy(this.gameObject);
         }
-
-        NetworkServer.Destroy(this.gameObject);
     }
 
 	public void InitBullet(float bulletDamage, float bulletSpeed, string _ownerID)

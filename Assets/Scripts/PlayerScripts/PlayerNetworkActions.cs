@@ -59,11 +59,13 @@ public class PlayerNetworkActions : NetworkBehaviour {
 
         if (!isLocalPlayer)
         {
+            //setup
             components.Add(GetComponentInChildren<Camera>());
             components.Add(GetComponent<ShipBehaviour>());
             components.Add(GetComponent<ShipStats>());
             components.Add(GetComponentInChildren<AudioListener>());
-            Destroy(GetComponent<PlayerController>());
+            //Destroy(GetComponent<PlayerController>());
+            GetComponent<PlayerController>().enabled = false;
             DisableComponents();
             starsParticle = GetComponentInChildren<ParticleSystem>();
             foreach (Transform child in transform)
@@ -91,10 +93,11 @@ public class PlayerNetworkActions : NetworkBehaviour {
         if (gameTimer <= 0f && isServer) { gameEnded = true; }
         if (!isLocalPlayer) return;
         if (shotTimer >= 0f) shotTimer -= Time.deltaTime;
-        if (Input.GetButton("Fire1") && shotTimer <= 0f)
+        if (Input.GetButton("Fire1") && shotTimer <= 0f && !gameObject.GetComponent<PlayerController>().Zombie)
         {
             CmdShoot();
             shotTimer = shipStats._shipStats.fireRate;
+            Debug.Log("fire rate: " + shotTimer);
         }
 
         //respawn key
@@ -228,7 +231,6 @@ public class PlayerNetworkActions : NetworkBehaviour {
     [Command]
     public void CmdShoot()
     {
-        
         GameObject newBullet = Instantiate(shot, shotSpawn.position, shotSpawn.rotation) as GameObject;
         newBullet.GetComponent<Bullet>().InitBullet(shipStats._shipStats.damage, shipStats._shipStats.shotSpeed, this.GetComponent<NetworkIdentity>().netId.ToString());
         Debug.Log("shot fired by " + this.GetComponent<NetworkIdentity>().netId.ToString() + ", but it has netID of " + newBullet.GetComponent<Bullet>().ownerID);
