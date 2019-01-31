@@ -443,7 +443,7 @@ Light:
   serializedVersion: 8
   m_Type: 1
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
-  m_Intensity: 1
+  m_Intensity: 2
   m_Range: 10
   m_SpotAngle: 30
   m_CookieSize: 10
@@ -476,7 +476,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 281720639}
   m_LocalRotation: {x: 0.3303045, y: 0.56537426, z: -0.26363838, w: 0.70834017}
-  m_LocalPosition: {x: -9.7, y: 6.26, z: 6.59}
+  m_LocalPosition: {x: -319, y: -206, z: 225}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -4267,7 +4267,7 @@ ParticleSystem:
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 2
-  randomSeed: -1358059290
+  randomSeed: 581768539
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -7765,7 +7765,7 @@ ParticleSystem:
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 2
-  randomSeed: 1572854183
+  randomSeed: -1243095869
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -11095,7 +11095,7 @@ ParticleSystem:
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 2
-  randomSeed: 635727932
+  randomSeed: 275793670
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -14601,10 +14601,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f5388dd6d468e145a6737bf310cf676, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shipStats: {fileID: 0}
+  curHealth: 0
+  gameTimer: 0
+  PlayerUITimer: {fileID: 0}
+  PlayerUIElement: {fileID: 0}
+  PlayerListContainer: {fileID: 0}
+  PlayerList: []
+  keys: []
   components:
   - {fileID: 1733405354}
   - {fileID: 0}
   - {fileID: 1733405347}
+  audioSource: {fileID: 0}
+  clips: []
+  shot: {fileID: 0}
+  shotSpawn: {fileID: 0}
+  shotTimer: 0
+  difference: 1
 --- !u!114 &1733405350
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14619,6 +14633,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shootPoint1: {fileID: 0}
   shootPoint2: {fileID: 0}
+  shotPrefab: {fileID: 0}
   moveForce: 0
   angle: 15
   basicMoveSpeed: 0
@@ -14774,15 +14789,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9816ae005af9a941b727e5cab07d54e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 10
-  tilt: 3
-  boundary:
-    xMin: -4
-    xMax: 4
-    zMin: -4
-    zMax: 8
+  Zombie: 0
   myRigidbody: {fileID: 0}
-  smoothing: 5
+  speed: 10
+  playerCameras: []
+  playerCameraPosition: {x: 0, y: 0.8, z: -0.6}
 --- !u!136 &1733405355
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -14920,10 +14931,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f5388dd6d468e145a6737bf310cf676, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shipStats: {fileID: 0}
+  curHealth: 0
+  gameTimer: 0
+  PlayerUITimer: {fileID: 0}
+  PlayerUIElement: {fileID: 0}
+  PlayerListContainer: {fileID: 0}
+  PlayerList: []
+  keys: []
   components:
   - {fileID: 1740874290}
   - {fileID: 0}
   - {fileID: 1740874283}
+  audioSource: {fileID: 0}
+  clips: []
+  shot: {fileID: 0}
+  shotSpawn: {fileID: 0}
+  shotTimer: 0
+  difference: 1
 --- !u!114 &1740874286
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14938,6 +14963,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shootPoint1: {fileID: 0}
   shootPoint2: {fileID: 0}
+  shotPrefab: {fileID: 0}
   moveForce: 0
   angle: 15
   basicMoveSpeed: 0
@@ -15093,15 +15119,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9816ae005af9a941b727e5cab07d54e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 10
-  tilt: 3
-  boundary:
-    xMin: -4
-    xMax: 4
-    zMin: -4
-    zMax: 8
+  Zombie: 0
   myRigidbody: {fileID: 0}
-  smoothing: 5
+  speed: 10
+  playerCameras: []
+  playerCameraPosition: {x: 0, y: 0.8, z: -0.6}
 --- !u!136 &1740874291
 CapsuleCollider:
   m_ObjectHideFlags: 0

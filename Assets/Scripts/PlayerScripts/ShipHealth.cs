@@ -15,9 +15,6 @@ public class ShipHealth : NetworkBehaviour
         health = maxHealth;
 	}
 	
-    //for antycheaters purpoeses we should make TakeDmage function that is supervised by server, not players
-    //meh
-    //i'm probaly very stupid :/
     [ClientRpc]
     public void RpcTakeDamage(float amount, NetworkInstanceId attacker)
     {
@@ -47,7 +44,7 @@ public class ShipHealth : NetworkBehaviour
     public void RpcPlayerDied(string whoKilled, string whoDied)
     {
         Debug.Log("PlayerID(" + whoKilled + ") died, killed by PlayerID(" + whoDied + ")");
-        //gameObject.GetComponent<GameManager>().UpdatePlayer(whoKilled, "kills");
-        //gameobject.getcomponent<gamemanager>().updateplayer(whodied, "deaths");
+        CustomGameManager.UpdatePlayer(whoKilled, "kills");
+        CustomGameManager.UpdatePlayer(whoDied, "deaths");
     }
 }

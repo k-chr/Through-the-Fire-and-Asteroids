@@ -86,6 +86,7 @@ MonoBehaviour:
   - {fileID: 1644335370733348, guid: 7077430243d0a9e4ea8fd9b39bf80013, type: 2}
   - {fileID: 146826, guid: 1240db91d7f614a458b2445b4f6c83dd, type: 2}
   - {fileID: 146826, guid: d2e2391c707e2c64ab8f0d6c4ba21450, type: 2}
+  - {fileID: 142012, guid: 5534fe87bdddbbb44ab4dd43c16c1a1e, type: 2}
   m_CustomConfig: 0
   m_MaxConnections: 4
   m_ConnectionConfig:
@@ -154,8 +155,3 @@ MonoBehaviour:
   timer: 0
   canRotate: 1
   gameStarted: 0
-  deathMatch: 0
-  coop: 0
-  teamDeathMatch: 0
-  SpawnPointsGroup: {fileID: 1716530461028150, guid: 5467ee23e252f0e48a387f475b7b1446,
-    type: 2}
