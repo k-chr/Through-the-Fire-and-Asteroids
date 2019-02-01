@@ -23,9 +23,13 @@ public class PlayerNetworkActions : NetworkBehaviour {
     public GameObject PlayerUIElement;
     public GameObject PlayerListContainer;
     public List<GameObject> PlayerList = new List<GameObject>();
+    public GameObject explosion;
     public string[] keys = null;
 
-    ParticleSystem starsParticle;
+    ParticleSystem[] particleEffects;
+    //particle List:
+    //0: thruster
+    //1: star particle
 
     Transform marker = null;
 
@@ -64,20 +68,26 @@ public class PlayerNetworkActions : NetworkBehaviour {
             components.Add(GetComponent<ShipBehaviour>());
             components.Add(GetComponent<ShipStats>());
             components.Add(GetComponentInChildren<AudioListener>());
-            //Destroy(GetComponent<PlayerController>());
             GetComponent<PlayerController>().enabled = false;
             DisableComponents();
-            starsParticle = GetComponentInChildren<ParticleSystem>();
+            particleEffects = GetComponentsInChildren<ParticleSystem>();
+
             foreach (Transform child in transform)
             {
                 if (child.CompareTag("Marker"))
                 {
                     marker = child;
-                    marker.GetComponent<Renderer>().material.color = Color.green;
+                    //marker.GetComponent<Renderer>().material.color = Color.green;
+                    marker.GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.green);
+                    marker.GetComponent<Renderer>().material.SetColor("_EmissionMap", Color.green);
+                    marker.GetComponent<Renderer>().material.SetColor("_EmissionColorUI", Color.green);
                 }
             }
-            starsParticle.Stop();
-            starsParticle.Clear();
+
+            //turning off star particle
+            particleEffects[1].Stop();
+            particleEffects[1].Clear();
+
             return;
         }
         else
@@ -235,7 +245,7 @@ public class PlayerNetworkActions : NetworkBehaviour {
         newBullet.GetComponent<Bullet>().InitBullet(shipStats._shipStats.damage, shipStats._shipStats.shotSpeed, this.GetComponent<NetworkIdentity>().netId.ToString());
         Debug.Log("shot fired by " + this.GetComponent<NetworkIdentity>().netId.ToString() + ", but it has netID of " + newBullet.GetComponent<Bullet>().ownerID);
         NetworkServer.Spawn(newBullet);
-        //RpcSendSoundToClients(0);
+        RpcSendSoundToClients(0);
     }
 
     //health management

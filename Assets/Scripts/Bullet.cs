@@ -14,14 +14,14 @@ public class Bullet : NetworkBehaviour {
 
     private void Start()
     {
-        GetComponent<Rigidbody>().velocity = transform.forward * speed/8;
+        GetComponent<Rigidbody>().velocity = transform.forward * speed;
     }
 
     [ServerCallback]
 	void Update ()
     {
         decayTime -= Time.deltaTime;
-        transform.position = transform.position + transform.forward * speed/8;
+        //transform.position += transform.forward * speed/96;
         if (decayTime < 0f) NetworkServer.Destroy(this.gameObject);
 	}
 

@@ -26,8 +26,8 @@ public class PlayerController : MonoBehaviour
         if (Zombie) return;
         transform.position += transform.forward * Time.deltaTime * speed;
         playerCameras[0].transform.localPosition = playerCameraPosition;
-        playerCameras[1].transform.rotation = Quaternion.Euler(90f, 0f, 0f);
-        playerCameras[1].transform.position = new Vector3(0f, 23f, 0f) + transform.position;
+        playerCameras[1].transform.rotation = Quaternion.Euler(90f, transform.rotation.y, 0f);
+        playerCameras[1].transform.position = new Vector3(0f, 50f, 0f) + transform.position;
         transform.Rotate(Input.GetAxis("Vertical"), 0f, -Input.GetAxis("Horizontal"));
     }
 
