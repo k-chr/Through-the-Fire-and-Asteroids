@@ -151,6 +151,36 @@ PrefabInstance:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114905928342480240, guid: beaa1f0fb2643544585f7172aad4c920,
+        type: 3}
+      propertyPath: m_SpawnPrefabs.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 114905928342480240, guid: beaa1f0fb2643544585f7172aad4c920,
+        type: 3}
+      propertyPath: matchSize
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 114905928342480240, guid: beaa1f0fb2643544585f7172aad4c920,
+        type: 3}
+      propertyPath: m_AutoCreatePlayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114905928342480240, guid: beaa1f0fb2643544585f7172aad4c920,
+        type: 3}
+      propertyPath: m_MinPlayers
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114905928342480240, guid: beaa1f0fb2643544585f7172aad4c920,
+        type: 3}
+      propertyPath: m_SpawnPrefabs.Array.data[3]
+      value: 
+      objectReference: {fileID: 142012, guid: 5534fe87bdddbbb44ab4dd43c16c1a1e, type: 3}
+    - target: {fileID: 114905928342480240, guid: beaa1f0fb2643544585f7172aad4c920,
+        type: 3}
+      propertyPath: m_CustomConfig
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: beaa1f0fb2643544585f7172aad4c920, type: 3}
 --- !u!1 &486195021

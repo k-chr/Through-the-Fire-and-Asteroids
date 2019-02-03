@@ -46,21 +46,11 @@ public class PlayerNetworkActions : NetworkBehaviour {
     public GameObject shot;
     public Transform shotSpawn;
 
-    public float shotTimer = 0f;
+    
     public int difference = 1;
 
     public void Start()
     {
-        SetScoreboard(true);
-        PlayerListContainer.SetActive(false);
-
-        gameTimer = 60;
-        InvokeRepeating("UpdateUITimer", 0f, 1f);
-
-        audioSource = GetComponent<AudioSource>();
-        shipStats = gameObject.GetComponent<ShipStats>();
-        curHealth = shipStats._shipStats.maxHealth;
-
         if (!isLocalPlayer)
         {
             //setup
@@ -68,7 +58,7 @@ public class PlayerNetworkActions : NetworkBehaviour {
             components.Add(GetComponent<ShipBehaviour>());
             components.Add(GetComponent<ShipStats>());
             components.Add(GetComponentInChildren<AudioListener>());
-            GetComponent<PlayerController>().enabled = false;
+            gameObject.GetComponent<PlayerController>().enabled = false;
             DisableComponents();
             particleEffects = GetComponentsInChildren<ParticleSystem>();
 
@@ -77,7 +67,6 @@ public class PlayerNetworkActions : NetworkBehaviour {
                 if (child.CompareTag("Marker"))
                 {
                     marker = child;
-                    //marker.GetComponent<Renderer>().material.color = Color.green;
                     marker.GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.green);
                     marker.GetComponent<Renderer>().material.SetColor("_EmissionMap", Color.green);
                     marker.GetComponent<Renderer>().material.SetColor("_EmissionColorUI", Color.green);
@@ -87,11 +76,21 @@ public class PlayerNetworkActions : NetworkBehaviour {
             //turning off star particle
             particleEffects[1].Stop();
             particleEffects[1].Clear();
-
             return;
         }
         else
         {
+            
+            SetScoreboard(true);
+            PlayerListContainer.SetActive(false);
+
+            gameTimer = 60;
+            InvokeRepeating("UpdateUITimer", 0f, 1f);
+
+            audioSource = GetComponent<AudioSource>();
+            shipStats = gameObject.GetComponent<ShipStats>();
+            curHealth = shipStats._shipStats.maxHealth;
+
             sceneCamera = Camera.main;
             if (sceneCamera != null)
                 sceneCamera.gameObject.SetActive(false);
@@ -100,16 +99,12 @@ public class PlayerNetworkActions : NetworkBehaviour {
 
     public void Update()
     {
-        if (gameTimer <= 0f && isServer) { gameEnded = true; }
+        if (gameTimer <= 0f) { gameEnded = true; }
         if (!isLocalPlayer) return;
-        if (shotTimer >= 0f) shotTimer -= Time.deltaTime;
-        if (Input.GetButton("Fire1") && shotTimer <= 0f && !gameObject.GetComponent<PlayerController>().Zombie)
-        {
-            CmdShoot();
-            shotTimer = shipStats._shipStats.fireRate;
-            Debug.Log("fire rate: " + shotTimer);
-        }
 
+        //do testowania speed musi byc na stale ustawiony, tak samo jak shotTimer
+        //transform.position += transform.forward * Time.deltaTime * 5f;
+            //gameObject.GetComponent<PlayerController>().speed;
         //respawn key
         if (Input.GetKeyDown(KeyCode.R))
         {
@@ -238,14 +233,27 @@ public class PlayerNetworkActions : NetworkBehaviour {
     }
 
     //Shooting mehtods
+    public void ShootKurla() { CmdShoot(shotSpawn.position, shotSpawn.rotation, this.GetComponent<NetworkIdentity>().netId.ToString()); }
     [Command]
-    public void CmdShoot()
+    public void CmdShoot(Vector3 _shotPos, Quaternion _shotRot, string _Owner)
     {
-        GameObject newBullet = Instantiate(shot, shotSpawn.position, shotSpawn.rotation) as GameObject;
-        newBullet.GetComponent<Bullet>().InitBullet(shipStats._shipStats.damage, shipStats._shipStats.shotSpeed, this.GetComponent<NetworkIdentity>().netId.ToString());
-        Debug.Log("shot fired by " + this.GetComponent<NetworkIdentity>().netId.ToString() + ", but it has netID of " + newBullet.GetComponent<Bullet>().ownerID);
+        GameObject newBullet = Instantiate(shot, _shotPos, _shotRot) as GameObject;
+        //static values for testing on multiple instances on one computer
+        newBullet.GetComponent<Bullet>().InitBullet(
+                                                   //shipStats._shipStats.damage,
+                                                   25,
+                                                   //shipStats._shipStats.shotSpeed,
+                                                   10f,
+                                                    _Owner);
         NetworkServer.Spawn(newBullet);
         RpcSendSoundToClients(0);
+    }
+
+    [Command]
+    public void CmdExplode(Vector3 _point)
+    {
+        GameObject expd = Instantiate(explosion, _point, new Quaternion(0f,0f,0f,0f)) as GameObject;
+        NetworkServer.Spawn(expd);
     }
 
     //health management
