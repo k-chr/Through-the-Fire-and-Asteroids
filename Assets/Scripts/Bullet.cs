@@ -11,13 +11,21 @@ public class Bullet : NetworkBehaviour {
 
     private void Start()
     {
+<<<<<<< HEAD
         //GetComponent<Rigidbody>().velocity = transform.forward * 15f;
+=======
+        GetComponent<Rigidbody>().velocity = transform.forward * 15f;
+>>>>>>> master
     }
 
 	void Update ()
     {
         decayTime -= Time.deltaTime;
+<<<<<<< HEAD
         transform.position += transform.forward * 1f;
+=======
+        //transform.position += transform.forward * 15f;
+>>>>>>> master
         if (decayTime < 0f) NetworkServer.Destroy(this.gameObject);
 	}
 
@@ -28,7 +36,11 @@ public class Bullet : NetworkBehaviour {
         {
             if (other.gameObject.GetComponent<NetworkIdentity>().netId.ToString() == ownerID) return;
             other.gameObject.GetComponent<PlayerNetworkActions>().TakeDamage(damage, "Player_" + ownerID);
+<<<<<<< HEAD
             other.gameObject.GetComponent<PlayerNetworkActions>().CmdExplode(gameObject.transform.position);
+=======
+            other.gameObject.GetComponent<PlayerNetworkActions>().CmdExplode(other.contacts[0].point);
+>>>>>>> master
             Debug.Log("Bullet with owner:" + ownerID + ", hit object:" + other.gameObject.name);
             Debug.Log("damage dealt: " + damage.ToString());
             NetworkServer.Destroy(this.gameObject);
