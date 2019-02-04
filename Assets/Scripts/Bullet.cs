@@ -4,50 +4,44 @@ using UnityEngine.Networking;
 public class Bullet : NetworkBehaviour {
 
 	public float damage = 0f;
-	public float speed = 15f;
+	public float speed = 0f;
 	public float decayTime = 0f;
 
     public string ownerID;
+        
+    public GameObject explosion;
+    public GameObject playerExplosion;
 
     private void Start()
     {
-<<<<<<< HEAD
-        //GetComponent<Rigidbody>().velocity = transform.forward * 15f;
-=======
-        GetComponent<Rigidbody>().velocity = transform.forward * 15f;
->>>>>>> master
+        GetComponent<Rigidbody>().velocity = transform.forward * speed;
     }
 
+    [ServerCallback]
 	void Update ()
     {
         decayTime -= Time.deltaTime;
-<<<<<<< HEAD
-        transform.position += transform.forward * 1f;
-=======
-        //transform.position += transform.forward * 15f;
->>>>>>> master
+        //transform.position += transform.forward * speed/96;
         if (decayTime < 0f) NetworkServer.Destroy(this.gameObject);
 	}
 
-    void OnTriggerEnter(Collider other)
+    void OnCollisionEnter(Collision other)
     {
         if (!isServer) return;
         if (other.gameObject.CompareTag("GameController"))
         {
             if (other.gameObject.GetComponent<NetworkIdentity>().netId.ToString() == ownerID) return;
             other.gameObject.GetComponent<PlayerNetworkActions>().TakeDamage(damage, "Player_" + ownerID);
-<<<<<<< HEAD
-            other.gameObject.GetComponent<PlayerNetworkActions>().CmdExplode(gameObject.transform.position);
-=======
-            other.gameObject.GetComponent<PlayerNetworkActions>().CmdExplode(other.contacts[0].point);
->>>>>>> master
+            
+            explosion = Instantiate(playerExplosion);
+            NetworkServer.Spawn(explosion);
             Debug.Log("Bullet with owner:" + ownerID + ", hit object:" + other.gameObject.name);
             Debug.Log("damage dealt: " + damage.ToString());
             NetworkServer.Destroy(this.gameObject);
         }
     }
 
-    public void InitBullet(float bulletDamage, float bulletSpeed, string _ownerID)
+	public void InitBullet(float bulletDamage, float bulletSpeed, string _ownerID)
     {
         ownerID = _ownerID;
 		this.damage = bulletDamage;

@@ -325,7 +325,7 @@ MonoBehaviour:
     type: 3}
   PlayerListContainer: {fileID: 1528463620550804}
   PlayerList: []
-  explosion: {fileID: 142012, guid: 5534fe87bdddbbb44ab4dd43c16c1a1e, type: 3}
+  explosion: {fileID: 0}
   keys: []
   components:
   - {fileID: 223401939946357692}
@@ -334,6 +334,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 5e3a1c843c988034e9656b14a7b4ade4, type: 3}
   shot: {fileID: 146826, guid: 1240db91d7f614a458b2445b4f6c83dd, type: 3}
   shotSpawn: {fileID: 496178}
+  shotTimer: 0
   difference: 1
 --- !u!114 &114167276845318142
 MonoBehaviour:
@@ -363,7 +364,6 @@ MonoBehaviour:
   Zombie: 0
   myRigidbody: {fileID: 0}
   speed: 0
-  shotTimer: 0
   playerCameras: []
   playerCameraPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &114308537456827356
