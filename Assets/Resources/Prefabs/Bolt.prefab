@@ -41,6 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 443036}
   - component: {fileID: 13652138}
+  - component: {fileID: 7618844120117391925}
   - component: {fileID: 114796741192552052}
   - component: {fileID: 114468491616243828}
   - component: {fileID: 114624410666102964}
@@ -80,6 +81,22 @@ CapsuleCollider:
   m_Height: 0.76
   m_Direction: 2
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &7618844120117391925
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 146826}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 1
+  m_Constraints: 112
+  m_CollisionDetection: 2
 --- !u!114 &114796741192552052
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -125,7 +142,11 @@ MonoBehaviour:
   m_Script: {fileID: -1768714887, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+<<<<<<< HEAD
   m_TransformSyncMode: 1
+=======
+  m_TransformSyncMode: 3
+>>>>>>> master
   m_SendInterval: 0.1
   m_SyncRotationAxis: 4
   m_RotationSyncCompression: 0
@@ -151,6 +172,11 @@ MonoBehaviour:
   speed: 20
   decayTime: 2
   ownerID: 
+<<<<<<< HEAD
+=======
+  explosion: {fileID: 0}
+  playerExplosion: {fileID: 142012, guid: 5534fe87bdddbbb44ab4dd43c16c1a1e, type: 3}
+>>>>>>> master
 --- !u!1 &149658
 GameObject:
   m_ObjectHideFlags: 0
