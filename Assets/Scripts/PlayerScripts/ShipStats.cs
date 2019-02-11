@@ -280,7 +280,7 @@ public class ShipStats : MonoBehaviour
         temp.speed = 2f;
         temp.turboMultiplier = 1.2f;
         temp.damageReduction = 30f;
-        temp.shotSpeed = 6f;
+        temp.shotSpeed = 60f;
         temp.curHealth = temp.maxHealth = 250f;
         temp.fireRate = 0.5f;
         statsInitializer[types[0]] = temp;
@@ -289,7 +289,7 @@ public class ShipStats : MonoBehaviour
         temp.speed = 7f;
         temp.turboMultiplier = 1.8f;
         temp.damageReduction = 15f;
-        temp.shotSpeed = 6f;
+        temp.shotSpeed = 60f;
         temp.curHealth = temp.maxHealth = 125f;
         temp.fireRate = 0.35f;
         statsInitializer[types[1]] = temp;
@@ -298,7 +298,7 @@ public class ShipStats : MonoBehaviour
         temp.speed = 4f;
         temp.turboMultiplier = 1.5f;
         temp.damageReduction = 20f;
-        temp.shotSpeed = 10f;
+        temp.shotSpeed = 100f;
         temp.curHealth = temp.maxHealth = 150f;
         temp.fireRate = 0.4f;
         statsInitializer[types[2]] = temp;
