@@ -8,7 +8,6 @@ public class PlayerController : MonoBehaviour
     public bool pause = false;
     public Rigidbody myRigidbody;
     public float speed = 0;
-    public float shotTimer = 0f;
 
     private GameObject[] SpawnPoints = null;
     public Camera[] playerCameras = null;
@@ -16,7 +15,6 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
-        shotTimer = -1f;
         myRigidbody = GetComponent<Rigidbody>();
         speed = gameObject.GetComponent<ShipStats>()._shipStats.speed;
         SpawnPoints = GameObject.FindGameObjectsWithTag("Respawn");
@@ -42,6 +40,7 @@ public class PlayerController : MonoBehaviour
 
     public void Died()
     {
+        //this.enabled = false;
         Zombie = true;
         Invoke("Respawn", 2f);
     }
@@ -51,6 +50,8 @@ public class PlayerController : MonoBehaviour
         int SpawnIndex = Random.Range(0, SpawnPoints.Length);
         transform.position = SpawnPoints[SpawnIndex].transform.position;
         transform.rotation = SpawnPoints[SpawnIndex].transform.rotation;
+        //this.enabled = true
+        //this.GetComponent<PlayerNetworkActions>().enabled = true;
         Zombie = false;
         this.GetComponent<PlayerNetworkActions>().curHealth = GetComponent<ShipStats>()._shipStats.maxHealth;
     }

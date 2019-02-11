@@ -14,6 +14,10 @@ public class UIManager : MonoBehaviour {
 	public Dictionary<string, Pair<Slider, Text>> upgradeUI = new Dictionary<string, Pair<Slider, Text>>();
 	public List<Slider> forSlidersDict = new List<Slider>();
 	public List<Text> forTextsDict = new List<Text>();
+	public Gradient gradient;
+	public Color gradientToColor;
+    private GradientColorKey[] colorKey;
+    private GradientAlphaKey[] alphaKey;
 	void Start () {
 		stats = owningPlayer.GetComponent<ShipStats>();
 		pointsAvailable.text = "Available upgrade points: " + stats.upgradeInfo.upgradePoints.ToString();
@@ -52,6 +56,9 @@ public class UIManager : MonoBehaviour {
 				}
 
 			}
+			if (Input.GetKeyDown(KeyCode.H)) {
+				stats.upgradeInfo++;
+			}
 		#endif
 		if (panel.gameObject.activeSelf && stats.upgradeInfo.upgradePoints > 0 && System.Array.Exists(inputStrings, str => str == temp)) {
 			switch (System.Int32.Parse(temp)) {
@@ -79,6 +86,9 @@ public class UIManager : MonoBehaviour {
 		Slider temp = pair.GetFirst();
 		Text temp1 = pair.GetSecond();
 		temp.value++;
+		Image img = temp.gameObject.GetComponent<Image>();
+		img.fillAmount = temp.value / temp.maxValue;
+		//img.color = Color.Lerp(Color.green, Color.red, 1f);
 		temp1.text = "Current Level: " + (stats.playerUpgrades[upgradeName].currentUpgradeLevel >= stats.playerUpgrades[upgradeName].possibleUpgradeLevels ? "Maximum!" : stats.playerUpgrades[upgradeName].currentUpgradeLevel.ToString());
 		pointsAvailable.text = "Available upgrade points: " + stats.upgradeInfo.upgradePoints.ToString();
 	}
