@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class EnemyStats : MonoBehaviour {
 
+	System.Tuple<int, int> tup;
+
 	// Use this for initialization
 	void Start () {
-		
+		int temp = 0;
+		Debug.Log($"{temp}");
 	}
 	
 	// Update is called once per frame
