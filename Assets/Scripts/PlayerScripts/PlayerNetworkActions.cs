@@ -13,9 +13,7 @@ public class PlayerNetworkActions : NetworkBehaviour {
     public float curHealth;
     [SyncVar]
     private bool gameEnded = false;
-
     [SerializeField]
-    [SyncVar]
     private int gameTimer = 0;
 
     //UI values
@@ -23,6 +21,9 @@ public class PlayerNetworkActions : NetworkBehaviour {
     public GameObject PlayerUIElement;
     public GameObject PlayerListContainer;
     public List<GameObject> PlayerList = new List<GameObject>();
+    [SerializeField]
+    private MenuUI menu = null;
+
     public GameObject explosion;
     public string[] keys = null;
 
@@ -30,8 +31,6 @@ public class PlayerNetworkActions : NetworkBehaviour {
     //particle List:
     //0: thruster
     //1: star particle
-
-    Transform marker = null;
 
     [SerializeField]
     List<Behaviour> components = new List<Behaviour>();
@@ -45,7 +44,6 @@ public class PlayerNetworkActions : NetworkBehaviour {
     //Shooting
     public GameObject shot;
     public Transform shotSpawn;
-
     
     public int difference = 1;
 
@@ -62,17 +60,6 @@ public class PlayerNetworkActions : NetworkBehaviour {
             DisableComponents();
             particleEffects = GetComponentsInChildren<ParticleSystem>();
 
-            foreach (Transform child in transform)
-            {
-                if (child.CompareTag("Marker"))
-                {
-                    marker = child;
-                    marker.GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.green);
-                    marker.GetComponent<Renderer>().material.SetColor("_EmissionMap", Color.green);
-                    marker.GetComponent<Renderer>().material.SetColor("_EmissionColorUI", Color.green);
-                }
-            }
-
             //turning off star particle
             particleEffects[1].Stop();
             particleEffects[1].Clear();
@@ -80,12 +67,18 @@ public class PlayerNetworkActions : NetworkBehaviour {
         }
         else
         {
-            
             SetScoreboard(true);
             PlayerListContainer.SetActive(false);
 
-            gameTimer = 60;
-            InvokeRepeating("UpdateUITimer", 0f, 1f);
+            menu = FindObjectOfType<MenuUI>();
+
+            menu.ingame = true;
+            menu.title.enabled = false;
+            menu.menuStates[2].GetComponentInChildren<InputField>().interactable = false;
+            menu.menuStates[2].GetComponentInChildren<Dropdown>().interactable = false;
+            menu.menuStates[0].SetActive(false);
+            menu.menuStates[1].SetActive(false);
+            menu.menuStates[2].SetActive(false);
 
             audioSource = GetComponent<AudioSource>();
             shipStats = gameObject.GetComponent<ShipStats>();
@@ -94,6 +87,8 @@ public class PlayerNetworkActions : NetworkBehaviour {
             sceneCamera = Camera.main;
             if (sceneCamera != null)
                 sceneCamera.gameObject.SetActive(false);
+            gameTimer = 60;
+            InvokeRepeating("UpdateUITimer", 0f, 1f);
         }
     }
 
@@ -102,9 +97,6 @@ public class PlayerNetworkActions : NetworkBehaviour {
         if (gameTimer <= 0f) { gameEnded = true; }
         if (!isLocalPlayer) return;
 
-        //do testowania speed musi byc na stale ustawiony, tak samo jak shotTimer
-        //transform.position += transform.forward * Time.deltaTime * 5f;
-            //gameObject.GetComponent<PlayerController>().speed;
         //respawn key
         if (Input.GetKeyDown(KeyCode.R))
         {
@@ -121,6 +113,21 @@ public class PlayerNetworkActions : NetworkBehaviour {
 
         if(Input.GetKeyUp(KeyCode.Tab)) PlayerListContainer.SetActive(false);
 
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (menu.menuStates[2].activeSelf || menu.menuStates[3].activeSelf)
+            {
+                menu.menuStates[2].SetActive(false);
+                menu.menuStates[3].SetActive(false);
+                gameObject.GetComponent<PlayerController>().pause = false;
+            }
+            else
+            {
+                menu.menuStates[3].SetActive(true);
+                gameObject.GetComponent<PlayerController>().pause = true;
+            }
+        }
+
         if (gameEnded) { CancelInvoke(); PlayerUITimer.text = "GameOver"; }
         else PlayerUITimer.text = (Mathf.RoundToInt(gameTimer)).ToString();
     }
@@ -131,6 +138,11 @@ public class PlayerNetworkActions : NetworkBehaviour {
         sceneCamera = Camera.main;
         if(sceneCamera != null)
             sceneCamera.gameObject.SetActive(true);
+        menu.title.enabled = true;
+        menu.menuStates[1].SetActive(true);
+        menu.menuStates[0].SetActive(false);
+        menu.menuStates[2].SetActive(false);
+        menu.menuStates[3].SetActive(false);
     }
 
     void DisableComponents()
@@ -150,8 +162,8 @@ public class PlayerNetworkActions : NetworkBehaviour {
             {
                 Destroy(PlayerElement);
             }
-
             PlayerList.Clear();
+
             keys = CustomGameManager.ReturnKeys();
 
             foreach(string key in keys)
@@ -189,7 +201,7 @@ public class PlayerNetworkActions : NetworkBehaviour {
 
     private void UpdateUITimer()
     {
-        if (isServer) gameTimer -= difference;
+        gameTimer -= difference;
     }
 
     public override void OnStartClient()
@@ -199,6 +211,7 @@ public class PlayerNetworkActions : NetworkBehaviour {
         ShipStats _playerShip = GetComponent<ShipStats>();
         _playerShip.transform.name = "Player_" + _netID;
         CustomGameManager.RegisterPlayer(_netID, _playerShip);
+
         Debug.Log("Amount of players in GameManager: " + CustomGameManager.GetNumberOfPlayers().ToString() + 
                   " and number of connections/players/lobbyPlayers on the Server: " + FindObjectOfType<NetworkLobbyManager>().numPlayers.ToString());
     }
@@ -259,14 +272,11 @@ public class PlayerNetworkActions : NetworkBehaviour {
     //health management
     public void TakeDamage(float amount, string _attacker)
     {
-        if (curHealth <= 0f)
-            return;
-
+        if (GetComponent<PlayerController>().Zombie) return;
         string thisPlayerID = "Player_" + gameObject.GetComponent<NetworkIdentity>().netId.ToString();
-
         curHealth -= amount;
 
-        if (curHealth <= 0)
+        if (curHealth <= 0f)
         {
             curHealth = 0f;
             CmdPlayerDied(_attacker, thisPlayerID);

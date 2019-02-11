@@ -67,6 +67,7 @@
     <Compile Include="Assets\Scripts\EnemyAI.cs" />
     <Compile Include="Assets\Scripts\EnemyStats.cs" />
     <Compile Include="Assets\Scripts\MinimapCamera.cs" />
+    <Compile Include="Assets\Scripts\PlayerScripts\CustomNetworkLobbyPlayer.cs" />
     <Compile Include="Assets\Scripts\PlayerScripts\PlayerController.cs" />
     <Compile Include="Assets\Scripts\PlayerScripts\PlayerNetworkActions.cs" />
     <Compile Include="Assets\Scripts\PlayerScripts\ShipBehaviour.cs" />
@@ -74,7 +75,13 @@
     <Compile Include="Assets\Scripts\PlayerScripts\ShipStats.cs" />
     <Compile Include="Assets\Scripts\UIManager.cs" />
     <Compile Include="Assets\Scripts\Utilities\FileDump.cs" />
+    <Compile Include="Assets\Scripts\Utilities\MatchListItem.cs" />
+    <Compile Include="Assets\Scripts\Utilities\MenuUI.cs" />
     <Compile Include="Assets\Scripts\Utilities\Pair.cs" />
+    <Compile Include="Assets\Scripts\Utilities\PlayerLobbyUIEL.cs" />
+    <Compile Include="Assets\Scripts\Utilities\UIGradientUtils.cs" />
+    <Compile Include="Assets\Scripts\Utilities\UITextCornersGradient.cs" />
+    <Compile Include="Assets\Scripts\Utilities\UITextGradient.cs" />
     <Compile Include="Assets\Scripts\Utilities\WhatIsLife.cs" />
     <None Include="Assets\JsonDotNet\link.xml" />
     <Reference Include="Unity.TextMeshPro.Editor">

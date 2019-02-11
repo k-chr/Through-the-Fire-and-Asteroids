@@ -151,7 +151,7 @@ public struct MatchStatistics {
     }
 
 	public void UpdatePoints() {
-		points = kills * 2;
+		points += kills * 2;
 	}
 }
 //**********************STATYSTYKI***********************

@@ -5,6 +5,7 @@ using System.Collections;
 public class PlayerController : MonoBehaviour
 {
     public bool Zombie = false;
+    public bool pause = false;
     public Rigidbody myRigidbody;
     public float speed = 0;
     public float shotTimer = 0f;
@@ -27,17 +28,15 @@ public class PlayerController : MonoBehaviour
     {
         if (shotTimer >= 0f) shotTimer -= Time.deltaTime;
         if (Zombie == true) return;
-        
+
         playerCameras[0].transform.localPosition = playerCameraPosition;
         playerCameras[1].transform.rotation = Quaternion.Euler(90f, transform.rotation.y, 0f);
         playerCameras[1].transform.position = new Vector3(0f, 50f, 0f) + transform.position;
         transform.Rotate(Input.GetAxis("Vertical"), 0f, -Input.GetAxis("Horizontal"));
-        if (Input.GetButton("Fire1") && shotTimer <= 0f)
+        if (Input.GetButton("Fire1") && shotTimer <= 0f && !pause)
         {
             gameObject.GetComponent<PlayerNetworkActions>().ShootKurla();
-            //do testowania shotTimer musi byc na stale ustawiony, tak samo jak speed
             shotTimer = 0.3f;
-                //gameObject.GetComponent<PlayerNetworkActions>().shipStats._shipStats.fireRate;
         }
     }
 

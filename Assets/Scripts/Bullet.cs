@@ -11,7 +11,6 @@ public class Bullet : NetworkBehaviour {
 
     private void Start()
     {
-        //GetComponent<Rigidbody>().velocity = transform.forward * 15f;
     }
 
 	void Update ()
