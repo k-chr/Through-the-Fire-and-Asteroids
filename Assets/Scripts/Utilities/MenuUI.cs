@@ -150,7 +150,7 @@ public class MenuUI : MonoBehaviour
                     if (isReady) lobbyPlayer.SendReadyToBeginMessage();
                     else lobbyPlayer.SendNotReadyToBeginMessage();
                 }
-                lobbyPlayerEl.GetComponent<PlayerLobbyUIEL>().Setup(lobbyPlayer.name + lobbyPlayer.netId.ToString(), lobbyPlayer.readyToBegin);
+                lobbyPlayerEl.GetComponent<PlayerLobbyUIEL>().Setup(lobbyPlayer.GetComponent<CustomNetworkLobbyPlayer>().name + "_" + lobbyPlayer.netId.ToString(), lobbyPlayer.readyToBegin);
                 playerList.Add(lobbyPlayerEl);
             }
         }
@@ -195,6 +195,7 @@ public class MenuUI : MonoBehaviour
 
     public void SettingsState()
     {
+        Debug.Log("clicked");
         if(ingame)
         {
             menuStates[2].SetActive(!menuStates[2].activeSelf);//toggle 2

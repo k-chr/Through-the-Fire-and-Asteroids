@@ -1,13 +1,17 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 
-public class CustomNetworkLobbyPlayer : MonoBehaviour
+public class CustomNetworkLobbyPlayer : NetworkBehaviour
 {
     [SerializeField]
     private NetworkLobbyPlayer thisPlayer;
+    private string name = null;
 
     void Start()
     {
-        thisPlayer.name = FindObjectOfType<MenuUI>().GetPlayerName();
+        if(isLocalPlayer)
+            name = FindObjectOfType<MenuUI>().GetPlayerName();
+        if(name != null)
+            thisPlayer.name = name;
     }
 }
