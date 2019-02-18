@@ -136,7 +136,7 @@ Rigidbody:
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 0
-  m_IsKinematic: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 1
@@ -295,14 +295,14 @@ MonoBehaviour:
   m_Script: {fileID: -1768714887, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_TransformSyncMode: 1
-  m_SendInterval: 0.04761905
+  m_TransformSyncMode: 3
+  m_SendInterval: 0.033333335
   m_SyncRotationAxis: 7
   m_RotationSyncCompression: 0
   m_SyncSpin: 1
-  m_MovementTheshold: 0.001
+  m_MovementTheshold: 0.0001
   m_VelocityThreshold: 0.0001
-  m_SnapThreshold: 5
+  m_SnapThreshold: 0
   m_InterpolateRotation: 10
   m_InterpolateMovement: 1
 --- !u!114 &114666164035007076
@@ -360,6 +360,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9816ae005af9a941b727e5cab07d54e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  movX: 0
+  movZ: 0
+  rotZ: 0
+  rotY: 0
+  rotX: 0
+  linearForce: {x: 1, y: 1, z: 4}
+  angularForce: {x: 0.6, y: 0.6, z: 0.2}
+  force: 4000
+  startOffset: {x: 0, y: 0, z: 0}
+  target: {fileID: 0}
+  rotateSpeed: 3
   Zombie: 0
   myRigidbody: {fileID: 0}
   speed: 0
@@ -421,7 +432,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 133904}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 1}
+  m_LocalPosition: {x: -0.078, y: -0.147, z: 1.468}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 404718}
@@ -531,7 +542,7 @@ Transform:
   m_GameObject: {fileID: 160714}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_Children: []
   m_Father: {fileID: 404718}
   m_RootOrder: 1
@@ -5858,7 +5869,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 100000
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -5958,7 +5969,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 10000
   field of view: 60
   orthographic: 0
   orthographic size: 5

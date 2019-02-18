@@ -285,7 +285,8 @@ public class PlayerNetworkActions : NetworkBehaviour {
     public void RpcPlayerDied(string whoKilled, string whoDied)
     {
         Debug.Log("RpcPlayerDied :: PlayerID(" + whoKilled + ") died, killed by PlayerID(" + whoDied + ")");
-        CustomGameManager.UpdatePlayer(whoKilled, "kills");
+        if(whoKilled.Contains("Player"))
+        	CustomGameManager.UpdatePlayer(whoKilled, "kills");
         CustomGameManager.UpdatePlayer(whoDied, "deaths");
     }
 }

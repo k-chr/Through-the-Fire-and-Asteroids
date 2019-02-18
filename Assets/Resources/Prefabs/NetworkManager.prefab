@@ -1,22 +1,12 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &100100000
-Prefab:
-  m_ObjectHideFlags: 1
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications: []
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 1067210356063286}
-  m_IsPrefabParent: 1
 --- !u!1 &1067210356063286
 GameObject:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 5
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
   m_Component:
   - component: {fileID: 4621497460211120}
   - component: {fileID: 114905928342480240}
@@ -30,9 +20,10 @@ GameObject:
   m_IsActive: 1
 --- !u!4 &4621497460211120
 Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1067210356063286}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -41,26 +32,12 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114143323457018358
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1067210356063286}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 227461547, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  manager: {fileID: 0}
-  showGUI: 1
-  offsetX: 0
-  offsetY: 0
 --- !u!114 &114905928342480240
 MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1067210356063286}
   m_Enabled: 1
   m_EditorHideFlags: 0
@@ -82,11 +59,18 @@ MonoBehaviour:
   m_OfflineScene: Lobby
   m_OnlineScene: 
   m_SpawnPrefabs:
-  - {fileID: 112598, guid: cf1f91c441868ff4cb428887f1fefb5e, type: 2}
-  - {fileID: 1644335370733348, guid: 7077430243d0a9e4ea8fd9b39bf80013, type: 2}
-  - {fileID: 146826, guid: 1240db91d7f614a458b2445b4f6c83dd, type: 2}
-  - {fileID: 146826, guid: d2e2391c707e2c64ab8f0d6c4ba21450, type: 2}
-  - {fileID: 142012, guid: 5534fe87bdddbbb44ab4dd43c16c1a1e, type: 2}
+  - {fileID: 112598, guid: cf1f91c441868ff4cb428887f1fefb5e, type: 3}
+  - {fileID: 1644335370733348, guid: 7077430243d0a9e4ea8fd9b39bf80013, type: 3}
+  - {fileID: 146826, guid: 1240db91d7f614a458b2445b4f6c83dd, type: 3}
+  - {fileID: 142012, guid: 5534fe87bdddbbb44ab4dd43c16c1a1e, type: 3}
+  - {fileID: 945884329347988841, guid: 71857ceb0a12a2b47914f30c0bf8a3ad, type: 3}
+  - {fileID: 3949610989016767147, guid: 43a02523d583fc24db8cc148426f0e4a, type: 3}
+  - {fileID: 7528190845095608901, guid: b4cd2229e86e8694a8a0e322e13cf56c, type: 3}
+  - {fileID: 8165524049952093479, guid: e40af30b37615e54b85c410ade820c18, type: 3}
+  - {fileID: 208350297686308230, guid: 138f3bfc1fe971d4186cb5cf06a35329, type: 3}
+  - {fileID: 1791288519983318, guid: 8ad4830179cb48940bcf1ea63269c2f5, type: 3}
+  - {fileID: 146826, guid: ff18b9c4b0720344f85093dc07ef9ead, type: 3}
+  - {fileID: 7886359833663251386, guid: 3c50011dd9697e24b831062dfe99d18d, type: 3}
   m_CustomConfig: 0
   m_MaxConnections: 4
   m_ConnectionConfig:
@@ -139,7 +123,7 @@ MonoBehaviour:
   m_MatchHost: mm.unet.unity3d.com
   m_MatchPort: 443
   matchName: default
-  matchSize: 4
+  matchSize: 8
   isNetworkActive: 0
   matchMaker: {fileID: 0}
   m_ShowLobbyGUI: 1
@@ -147,11 +131,27 @@ MonoBehaviour:
   m_MaxPlayersPerConnection: 1
   m_MinPlayers: 1
   m_LobbyPlayerPrefab: {fileID: 114439846409558130, guid: 7077430243d0a9e4ea8fd9b39bf80013,
-    type: 2}
-  m_GamePlayerPrefab: {fileID: 112598, guid: cf1f91c441868ff4cb428887f1fefb5e, type: 2}
+    type: 3}
+  m_GamePlayerPrefab: {fileID: 112598, guid: cf1f91c441868ff4cb428887f1fefb5e, type: 3}
   m_LobbyScene: Lobby
   m_PlayScene: GameplayScene
   lobbySlots: []
   timer: 0
   canRotate: 1
   gameStarted: 0
+--- !u!114 &114143323457018358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1067210356063286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 227461547, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  manager: {fileID: 0}
+  showGUI: 1
+  offsetX: 0
+  offsetY: 0
