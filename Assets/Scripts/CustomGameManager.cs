@@ -15,7 +15,10 @@ public class CustomGameManager : MonoBehaviour
 
     public static void UnRegisterPlayer(string _playerID)
     {
-        players.Remove(_playerID);
+        if (players[_playerID] != null)
+            players.Remove(_playerID);
+        else
+            Debug.Log("You wanted to acces object with key that doesn't exist in this list.");
     }
 
     public static ShipStats GetPlayerShip(string _playerID)
@@ -36,6 +39,14 @@ public class CustomGameManager : MonoBehaviour
     public static string[] ReturnKeys()
     {
         return players.Keys.ToArray();
+    }
+
+    public static bool isIn(string _playerID)
+    {
+        if (players.ContainsKey(_playerID))
+            return true;
+        else
+            return false;
     }
 
     public static void UpdatePlayer(string _player, string what)

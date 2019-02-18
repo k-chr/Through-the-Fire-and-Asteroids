@@ -6,16 +6,14 @@ using UnityEngine.UI;
 
 [RequireComponent(typeof(AudioSource))]
 [RequireComponent(typeof(ShipStats))]
-public class PlayerNetworkActions : NetworkBehaviour {
-
+public class PlayerNetworkActions : NetworkBehaviour
+{
     public ShipStats shipStats;
     [SyncVar]
     public float curHealth;
     [SyncVar]
     private bool gameEnded = false;
-
     [SerializeField]
-    [SyncVar]
     private int gameTimer = 0;
 
     //UI values
@@ -23,6 +21,9 @@ public class PlayerNetworkActions : NetworkBehaviour {
     public GameObject PlayerUIElement;
     public GameObject PlayerListContainer;
     public List<GameObject> PlayerList = new List<GameObject>();
+    [SerializeField]
+    private MenuUI menu = null;
+
     public GameObject explosion;
     public string[] keys = null;
 
@@ -30,8 +31,6 @@ public class PlayerNetworkActions : NetworkBehaviour {
     //particle List:
     //0: thruster
     //1: star particle
-
-    Transform marker = null;
 
     [SerializeField]
     List<Behaviour> components = new List<Behaviour>();
@@ -45,12 +44,20 @@ public class PlayerNetworkActions : NetworkBehaviour {
     //Shooting
     public GameObject shot;
     public Transform shotSpawn;
-
     
     public int difference = 1;
 
     public void Start()
     {
+        SetScoreboard(true);
+        PlayerListContainer.SetActive(false);
+
+        gameTimer = 60;
+
+        audioSource = GetComponent<AudioSource>();
+        shipStats = gameObject.GetComponent<ShipStats>();
+        curHealth = shipStats._shipStats.maxHealth;
+
         if (!isLocalPlayer)
         {
             //setup
@@ -58,34 +65,30 @@ public class PlayerNetworkActions : NetworkBehaviour {
             components.Add(GetComponent<ShipBehaviour>());
             components.Add(GetComponent<ShipStats>());
             components.Add(GetComponentInChildren<AudioListener>());
-            gameObject.GetComponent<PlayerController>().enabled = false;
+            GetComponent<PlayerController>().enabled = false;
             DisableComponents();
             particleEffects = GetComponentsInChildren<ParticleSystem>();
-
-            foreach (Transform child in transform)
-            {
-                if (child.CompareTag("Marker"))
-                {
-                    marker = child;
-                    marker.GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.green);
-                    marker.GetComponent<Renderer>().material.SetColor("_EmissionMap", Color.green);
-                    marker.GetComponent<Renderer>().material.SetColor("_EmissionColorUI", Color.green);
-                }
-            }
 
             //turning off star particle
             particleEffects[1].Stop();
             particleEffects[1].Clear();
+
             return;
         }
         else
         {
-            
             SetScoreboard(true);
             PlayerListContainer.SetActive(false);
 
-            gameTimer = 60;
-            InvokeRepeating("UpdateUITimer", 0f, 1f);
+            menu = FindObjectOfType<MenuUI>();
+
+            menu.ingame = true;
+            menu.title.enabled = false;
+            menu.menuStates[2].GetComponentInChildren<InputField>().interactable = false;
+            menu.menuStates[2].GetComponentInChildren<Dropdown>().interactable = false;
+            menu.menuStates[0].SetActive(false);
+            menu.menuStates[1].SetActive(false);
+            menu.menuStates[2].SetActive(false);
 
             audioSource = GetComponent<AudioSource>();
             shipStats = gameObject.GetComponent<ShipStats>();
@@ -94,17 +97,16 @@ public class PlayerNetworkActions : NetworkBehaviour {
             sceneCamera = Camera.main;
             if (sceneCamera != null)
                 sceneCamera.gameObject.SetActive(false);
+            gameTimer = 60;
+            InvokeRepeating("UpdateUITimer", 0f, 1f);
         }
     }
 
     public void Update()
     {
-        if (gameTimer <= 0f) { gameEnded = true; }
+        if (gameTimer <= 0f && isServer) { gameEnded = true; }
         if (!isLocalPlayer) return;
 
-        //do testowania speed musi byc na stale ustawiony, tak samo jak shotTimer
-        //transform.position += transform.forward * Time.deltaTime * 5f;
-            //gameObject.GetComponent<PlayerController>().speed;
         //respawn key
         if (Input.GetKeyDown(KeyCode.R))
         {
@@ -121,6 +123,21 @@ public class PlayerNetworkActions : NetworkBehaviour {
 
         if(Input.GetKeyUp(KeyCode.Tab)) PlayerListContainer.SetActive(false);
 
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (menu.menuStates[2].activeSelf || menu.menuStates[3].activeSelf)
+            {
+                menu.menuStates[2].SetActive(false);
+                menu.menuStates[3].SetActive(false);
+                gameObject.GetComponent<PlayerController>().pause = false;
+            }
+            else
+            {
+                menu.menuStates[3].SetActive(true);
+                gameObject.GetComponent<PlayerController>().pause = true;
+            }
+        }
+
         if (gameEnded) { CancelInvoke(); PlayerUITimer.text = "GameOver"; }
         else PlayerUITimer.text = (Mathf.RoundToInt(gameTimer)).ToString();
     }
@@ -131,12 +148,22 @@ public class PlayerNetworkActions : NetworkBehaviour {
         sceneCamera = Camera.main;
         if(sceneCamera != null)
             sceneCamera.gameObject.SetActive(true);
+        if(isLocalPlayer)
+        {
+            menu.menuStates[1].SetActive(true);
+            menu.menuStates[0].SetActive(false);
+            menu.menuStates[2].SetActive(false);
+            menu.menuStates[3].SetActive(false);
+            menu.title.enabled = true;
+            menu.ingame = false;
+        }
     }
 
     void DisableComponents()
     {
         for (int i = 0; i < components.Count; ++i)
         {
+            if (components[i] == null) continue;
             components[i].enabled = false;
         }
     }
@@ -150,8 +177,8 @@ public class PlayerNetworkActions : NetworkBehaviour {
             {
                 Destroy(PlayerElement);
             }
-
             PlayerList.Clear();
+
             keys = CustomGameManager.ReturnKeys();
 
             foreach(string key in keys)
@@ -189,7 +216,7 @@ public class PlayerNetworkActions : NetworkBehaviour {
 
     private void UpdateUITimer()
     {
-        if (isServer) gameTimer -= difference;
+        gameTimer -= difference;
     }
 
     public override void OnStartClient()
@@ -199,6 +226,7 @@ public class PlayerNetworkActions : NetworkBehaviour {
         ShipStats _playerShip = GetComponent<ShipStats>();
         _playerShip.transform.name = "Player_" + _netID;
         CustomGameManager.RegisterPlayer(_netID, _playerShip);
+
         Debug.Log("Amount of players in GameManager: " + CustomGameManager.GetNumberOfPlayers().ToString() + 
                   " and number of connections/players/lobbyPlayers on the Server: " + FindObjectOfType<NetworkLobbyManager>().numPlayers.ToString());
     }
@@ -252,21 +280,18 @@ public class PlayerNetworkActions : NetworkBehaviour {
     [Command]
     public void CmdExplode(Vector3 _point)
     {
-        GameObject expd = Instantiate(explosion, _point, new Quaternion(0f,0f,0f,0f)) as GameObject;
+        GameObject expd = Instantiate(explosion, _point, new Quaternion(0f, 0f, 0f, 0f)) as GameObject;
         NetworkServer.Spawn(expd);
     }
 
     //health management
     public void TakeDamage(float amount, string _attacker)
     {
-        if (curHealth <= 0f)
-            return;
-
+        if (GetComponent<PlayerController>().Zombie) return;
         string thisPlayerID = "Player_" + gameObject.GetComponent<NetworkIdentity>().netId.ToString();
-
         curHealth -= amount;
 
-        if (curHealth <= 0)
+        if (curHealth <= 0f)
         {
             curHealth = 0f;
             CmdPlayerDied(_attacker, thisPlayerID);

@@ -1,12 +1,8 @@
 
-\.vs/
+Library/
 
 builds/
 
-Library/
-
 ProjectSettings/
 
-Through-the-Fire-and-Asteroids\.csproj
-
-Through-the-Fire-and-Asteroids\.sln
+\.vs/

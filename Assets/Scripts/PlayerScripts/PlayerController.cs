@@ -33,9 +33,10 @@ public class PlayerController : MonoBehaviour
     public float rotateSpeed = 3f;
 
     public bool Zombie = false;
+    public bool pause = false;
     public Rigidbody myRigidbody;
     public float speed = 0;
-    public float shotTimer = 0f;
+    public float shotTimer = 0;
 
     private GameObject[] SpawnPoints = null;
     public Camera[] playerCameras = null;
@@ -104,6 +105,7 @@ public class PlayerController : MonoBehaviour
     }
     public void Died()
     {
+        //this.enabled = false;
         Zombie = true;
         Invoke("Respawn", 2f);
     }

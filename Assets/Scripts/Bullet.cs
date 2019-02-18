@@ -9,19 +9,15 @@ public class Bullet : NetworkBehaviour {
 
     public string ownerID;
 
-    private void Start()
-    {
-        //GetComponent<Rigidbody>().velocity = transform.forward * 15f;
-    }
-
+    [ServerCallback]
 	void Update ()
     {
         decayTime -= Time.deltaTime;
-        transform.position += transform.forward * 1f;
+        transform.position += transform.forward * speed/96;
         if (decayTime < 0f) NetworkServer.Destroy(this.gameObject);
 	}
 
-    void OnTriggerEnter(Collider other)
+    void OnCollisionEnter(Collision other)
     {
         Debug.Log(other.gameObject.tag);
         if (!isServer) return;
@@ -56,7 +52,7 @@ public class Bullet : NetworkBehaviour {
         }
     }
 
-    public void InitBullet(float bulletDamage, float bulletSpeed, string _ownerID)
+	public void InitBullet(float bulletDamage, float bulletSpeed, string _ownerID)
     {
         ownerID = _ownerID;
 		this.damage = bulletDamage;
