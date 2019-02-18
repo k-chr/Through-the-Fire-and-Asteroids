@@ -35,6 +35,16 @@ public class CustomNetworkManager : NetworkLobbyManager
 
     public override void OnClientDisconnect(NetworkConnection conn)
     {
+        HashSet<NetworkInstanceId> listIDs = conn.clientOwnedObjects;
+        foreach(NetworkInstanceId tempID in listIDs)
+        {
+            if (CustomGameManager.isIn("Player_" + tempID.ToString()))
+            {
+                CustomGameManager.UnRegisterPlayer("Player_" + tempID.ToString());
+                Debug.Log("Player: " + "Player_" + tempID.ToString() + " unregistered");
+            }
+        }
+        
         base.OnClientDisconnect(conn);
     }
 }

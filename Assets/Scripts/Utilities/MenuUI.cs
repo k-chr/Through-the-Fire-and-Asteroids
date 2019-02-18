@@ -24,7 +24,7 @@ public class MenuUI : MonoBehaviour
     public Text title;
     
     public bool ingame = false;
-    bool isReady = false;
+    public bool isReady = false;
     List<GameObject> roomList = new List<GameObject>();
     [SerializeField]
     private GameObject matchUIel;

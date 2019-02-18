@@ -53,7 +53,6 @@ public class PlayerNetworkActions : NetworkBehaviour
         PlayerListContainer.SetActive(false);
 
         gameTimer = 60;
-        InvokeRepeating("UpdateUITimer", 0f, 1f);
 
         audioSource = GetComponent<AudioSource>();
         shipStats = gameObject.GetComponent<ShipStats>();
@@ -149,17 +148,22 @@ public class PlayerNetworkActions : NetworkBehaviour
         sceneCamera = Camera.main;
         if(sceneCamera != null)
             sceneCamera.gameObject.SetActive(true);
-        menu.menuStates[1].SetActive(true);
-        menu.menuStates[0].SetActive(false);
-        menu.menuStates[2].SetActive(false);
-        menu.menuStates[3].SetActive(false);
-        menu.title.enabled = true;
+        if(isLocalPlayer)
+        {
+            menu.menuStates[1].SetActive(true);
+            menu.menuStates[0].SetActive(false);
+            menu.menuStates[2].SetActive(false);
+            menu.menuStates[3].SetActive(false);
+            menu.title.enabled = true;
+            menu.ingame = false;
+        }
     }
 
     void DisableComponents()
     {
         for (int i = 0; i < components.Count; ++i)
         {
+            if (components[i] == null) continue;
             components[i].enabled = false;
         }
     }
