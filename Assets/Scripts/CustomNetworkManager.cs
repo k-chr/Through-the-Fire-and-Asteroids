@@ -47,4 +47,9 @@ public class CustomNetworkManager : NetworkLobbyManager
         
         base.OnClientDisconnect(conn);
     }
+
+    public override void OnLobbyClientConnect(NetworkConnection conn)
+    {
+        base.OnLobbyClientConnect(conn);
+    }
 }

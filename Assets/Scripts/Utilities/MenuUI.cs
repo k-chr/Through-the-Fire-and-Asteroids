@@ -16,7 +16,7 @@ public class MenuUI : MonoBehaviour
     public CustomNetworkManager networkManager;
     public GameObject[] menuStates;
     /*Menu states:
-     * 0: Host/joined screen
+     * 0: Host/joined screend
      * 1: Search screen
      * 2: Settings window
      * 3: In game
@@ -48,6 +48,7 @@ public class MenuUI : MonoBehaviour
             networkManager.StartMatchMaker();
         }
         RefreshGamesList();
+        isReady = false;
     }
 
     public void SetRoomName(string _name)
@@ -66,6 +67,7 @@ public class MenuUI : MonoBehaviour
     {
         playerName = _name;
     }
+
     public string GetPlayerName()
     {
         return playerName;
@@ -73,6 +75,7 @@ public class MenuUI : MonoBehaviour
 
     public void CreateRoom()
     {
+        isReady = false;
         if (roomName != "" && roomName != null)
         {
             Debug.Log("Creating room with name: " + roomName + ", and size of: " + roomSize.ToString());
@@ -144,13 +147,14 @@ public class MenuUI : MonoBehaviour
         {
             if (lobbyPlayer != null)
             {
+                lobbyPlayer.GetComponent<CustomNetworkLobbyPlayer>().Start();
                 GameObject lobbyPlayerEl = Instantiate(playerUIEl, playersListTrans);
                 if (lobbyPlayer.isLocalPlayer)
                 {
                     if (isReady) lobbyPlayer.SendReadyToBeginMessage();
                     else lobbyPlayer.SendNotReadyToBeginMessage();
                 }
-                lobbyPlayerEl.GetComponent<PlayerLobbyUIEL>().Setup(lobbyPlayer.GetComponent<CustomNetworkLobbyPlayer>().name + "_" + lobbyPlayer.netId.ToString(), lobbyPlayer.readyToBegin);
+                lobbyPlayerEl.GetComponent<PlayerLobbyUIEL>().Setup(lobbyPlayer.GetComponent<CustomNetworkLobbyPlayer>().name, lobbyPlayer.readyToBegin);
                 playerList.Add(lobbyPlayerEl);
             }
         }
@@ -191,11 +195,11 @@ public class MenuUI : MonoBehaviour
             }
             menuStates[0].SetActive(true);
         }
+        isReady = false;
     }
 
     public void SettingsState()
     {
-        Debug.Log("clicked");
         if(ingame)
         {
             menuStates[2].SetActive(!menuStates[2].activeSelf);//toggle 2
@@ -212,6 +216,7 @@ public class MenuUI : MonoBehaviour
             LeaveRoom();
             menuStates[2].SetActive(true);
         }
+        isReady = false;
     }
 
     public void JoinRoom(MatchInfoSnapshot _match)
@@ -229,6 +234,7 @@ public class MenuUI : MonoBehaviour
     public void LeaveRoom()
     {
         MatchInfo match = networkManager.matchInfo;
+        isReady = false;
         if (match != null)
         {
             networkManager.matchMaker.DropConnection(match.networkId, match.nodeId, 0, networkManager.OnDropConnection);

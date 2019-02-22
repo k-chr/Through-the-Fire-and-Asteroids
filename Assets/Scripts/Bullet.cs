@@ -13,20 +13,44 @@ public class Bullet : NetworkBehaviour {
 	void Update ()
     {
         decayTime -= Time.deltaTime;
-        transform.position += transform.forward * speed/96;
+        transform.position += transform.forward * speed * Time.deltaTime;
         if (decayTime < 0f) NetworkServer.Destroy(this.gameObject);
 	}
 
-    void OnCollisionEnter(Collision other)
+    void OnTriggerEnter(Collider other)
     {
+        Debug.Log("Collider tag = " + other.gameObject.tag + other.gameObject.GetComponent<NetworkIdentity>().netId.ToString() + " _ownerID = " + ownerID);
         if (!isServer) return;
-        if (other.gameObject.CompareTag("GameController"))
+        if (other.gameObject.CompareTag("Player"))
         {
-            if (other.gameObject.GetComponent<NetworkIdentity>().netId.ToString() == ownerID) return;
-            other.gameObject.GetComponent<PlayerNetworkActions>().TakeDamage(damage, "Player_" + ownerID);
-            other.gameObject.GetComponent<PlayerNetworkActions>().CmdExplode(gameObject.transform.position);
+            Debug.Log("tutaj kurwa");
+            if (other.gameObject.tag + "_" + other.gameObject.GetComponent<NetworkIdentity>().netId.ToString() != ownerID){
+                other.gameObject.GetComponent<PlayerNetworkActions>().TakeDamage(damage, ownerID);
+                other.gameObject.GetComponent<PlayerNetworkActions>().CmdExplode(gameObject.transform.position);
+                Debug.Log("Bullet with owner:" + ownerID + ", hit object:" + other.gameObject.name);
+                Debug.Log("damage dealt: " + damage.ToString());
+                NetworkServer.Destroy(this.gameObject);
+            }
+        }
+        else if(other.gameObject.CompareTag("Enemy")){
+            
+            if (other.gameObject.tag + "_" + other.gameObject.GetComponent<NetworkIdentity>().netId.ToString() == ownerID) return;
+            Debug.Log("a teraz tutaj kurwa");
+            other.gameObject.GetComponent<EnemyAI>().TakeDamage(damage);
             Debug.Log("Bullet with owner:" + ownerID + ", hit object:" + other.gameObject.name);
-            Debug.Log("damage dealt: " + damage.ToString());
+            NetworkServer.Destroy(this.gameObject);
+        }
+        else if(other.gameObject.CompareTag("Asteroid")){
+            Debug.Log("dupa2");
+            
+            other.gameObject.GetComponent<MeteorMotion>().TakeDamage(damage);
+            NetworkServer.Destroy(this.gameObject);
+        }
+        else if(other.gameObject.CompareTag("Unicorn")){
+            
+            if (other.gameObject.tag + "_" + other.gameObject.GetComponent<NetworkIdentity>().netId.ToString() == ownerID) return;
+            Debug.Log("no chyba tutaj kurwa");
+            other.gameObject.GetComponent<NetworkUnicornActions>().TakeDamage(damage);
             NetworkServer.Destroy(this.gameObject);
         }
     }
@@ -35,7 +59,7 @@ public class Bullet : NetworkBehaviour {
     {
         ownerID = _ownerID;
 		this.damage = bulletDamage;
-		this.speed = bulletSpeed;
-		this.decayTime = 2f;
+		this.speed = bulletSpeed*3f;
+		this.decayTime = 90f;
 	}
 }

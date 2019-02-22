@@ -5,29 +5,29 @@ public class CustomNetworkLobbyPlayer : NetworkBehaviour
 {
     [SerializeField]
     private NetworkLobbyPlayer thisPlayer;
+    [SerializeField]
+    [SyncVar]
     private string name = null;
 
-    public void Setup(string _name)
-    {
-        name = _name;
-    }
-
-    void Start()
-    {
-        if (name != null)
-        {
-            thisPlayer.name = name;
-        }
-    }
-
-    public override void OnStartLocalPlayer()
-    {
-        name = FindObjectOfType<MenuUI>().GetPlayerName();
-    }
-
-    private void OnDisable()
+    public void Start()
     {
         if (isLocalPlayer)
-            GetComponent<MenuUI>().isReady = false;
+        {
+            name = FindObjectOfType<MenuUI>().GetPlayerName();
+        }
+        CmdSendName(name);
+    }
+
+    [Command]
+    public void CmdSendName(string _name)
+    {
+        RpcSendName(_name);
+    }
+
+    [ClientRpc]
+    private void RpcSendName(string _name)
+    {
+        name = _name;
+        thisPlayer.name = name;
     }
 }
